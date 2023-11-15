@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+        crossorigin="anonymous">
+    <title>Your App Name</title>
+    <style>
+        /* Add your custom styles here */
+        body {
+            padding: 20px;
+        }
+
+        section {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            /* Border to separate sections */
+            border-radius: 5px;
+            /* Optional: Add border-radius for a rounded appearance */
+        }
+
+        .container {
+            max-width: 800px;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        p {
+            font-size: 1.2em;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        header.jumbotron {
+            color: #ffffff;
+            text-align: center;
+            padding: 100px 0;
+        }
+
+        header.jumbotron h1 {
+            font-size: 3.5rem;
+        }
+
+        header.jumbotron p {
+            font-size: 1.5rem;
+        }
+
+        section#about {
+            padding: 50px 0;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 20px 0;
+        }
+
+        h1,
+        p {
+            color: black;
+        }
+
+        .app-img {
+            margin-left: 10rem;
+            width: 50%;
+            height: auto;
+        }
+
+        .navbar-collapse {
+            font-size: large;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="#" style="margin-left: 0.5rem; color: brown;"> Wits<span><b>Quiz</b></span> Whiz
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
+            aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/about-us">About</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/auth/">Login</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Section 1 and Section 2 Side by Side -->
+        <div class="row">
+            <!-- Section 1: Input URL -->
+            <div class="col-md-6">
+                <section>
+                    <h2>Section 1: Input URL</h2>
+                    <div class="input-group mb-3">
+                        <form id="input_url" method="post" action="/process/urls">
+                            <input type="text" class="form-control" placeholder="Enter URL" id="urlInput" name="url">
+                            <!-- <div class="input-group-append"> -->
+                            <button class="btn btn-primary" type="submit">Generate MCQs</button>
+                            <!-- </div> -->
+                        </form>
+                    </div>
+                </section>
+            </div>
+
+
+            <!-- Section 2: Upload PDF -->
+            <div class="col-md-6">
+                <section>
+                    <h2>Section 2: Upload PDF</h2>
+                    <form method="post" action="/process/pdf" enctype="multipart/form-data">
+                        <div class="custom-file mb-3">
+                            <input type="file" class="custom-file-input" id="pdfInput" name="pdf">
+                            <label class="custom-file-label" for="pdfInput">Choose PDF file</label>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Generate MCQs</button>
+                    </form>
+                </section>
+            </div>
+
+        </div>
+
+        <!-- Section 3: Display MCQ Response -->
+        <section>
+            <h2>Section 3: MCQ Response</h2>
+            <!-- Add the display area for MCQ response here -->
+            {% for mcq in mcqs %}
+            <pre>
+                {{ mcq }}
+            </pre>
+            {% endfor %}
+            <div id="mcqResponse"></div>
+        </section>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>
