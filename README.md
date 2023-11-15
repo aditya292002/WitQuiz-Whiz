@@ -1,6 +1,4 @@
-Your README looks well-structured, but I noticed a couple of formatting and grammatical suggestions. Here's a corrected version:
 
-```markdown
 # WitQuiz-Whiz
 
 WitQuiz Whiz: Convert PDFs and website content into engaging multiple-choice questions effortlessly.
