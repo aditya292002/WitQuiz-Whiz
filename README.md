@@ -47,13 +47,4 @@ This project aims to enhance the learning experience by converting PDFs and webs
 ## Usage
 
 This project aims to enhance the learning experience by converting PDFs and website content into engaging multiple-choice questions effortlessly.
-```
 
-Changes made:
-
-1. Used consistent formatting for code snippets (backticks around code).
-2. Made sure the script and file names are in bold for better visibility.
-3. Provided a link to the OpenAI documentation for more details on generating an assistant.
-4. Improved sentence structure and grammar for better readability.
-
-Feel free to customize it further based on your preferences!
