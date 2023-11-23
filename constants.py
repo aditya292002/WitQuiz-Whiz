@@ -1,1 +1,1 @@
-OPENAI_APIKEY = "<your_openai_api_key>"
+OPENAI_APIKEY = "your-api-key-here"

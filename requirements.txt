@@ -1,0 +1,15 @@
+
+fastapi==0.104.1
+asyncio==3.4.3
+pydantic==2.4.2
+openai==1.2.3
+jinja2==3.1.2
+starlette==0.27.0
+beautifulsoup4==4.12.0
+PyMuPDF==1.23.6
+requests==2.26.0
+"uvicorn[standard]"
+sqlalchemy==2.0.23
+passlib==1.7.4
+icecream
+python-multipart==0.0.6

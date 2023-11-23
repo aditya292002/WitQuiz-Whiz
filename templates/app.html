@@ -150,11 +150,11 @@
         <section>
             <h2>Section 3: MCQ Response</h2>
             <!-- Add the display area for MCQ response here -->
-            {% for mcq in mcqs %}
-            <pre>
-                {{ mcq }}
-            </pre>
-            {% endfor %}
+            <ol>
+                {% for mcq in mcqs %}
+                <li>{{ mcq }}</li>
+                {% endfor %}
+            </ol>
             <div id="mcqResponse"></div>
         </section>
     </div>

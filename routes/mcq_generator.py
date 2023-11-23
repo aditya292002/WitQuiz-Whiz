@@ -9,7 +9,7 @@ from scrapper import *
 from openai_handler import *
 import asyncio
 from fastapi.templating import Jinja2Templates
-
+from utility.parse_mcq import parse_mcq
 
 router_gen_mcq = APIRouter(
     prefix='/process',
@@ -43,7 +43,20 @@ async def test(user_input):
         thread_id=thread.id,
         assistant_id=assistant_id,
         instructions="""
-        Generate a  multiple choice questions. 
+Generate a multiple-choice question with four options and return it in the following JSON format:
+
+json
+Copy code
+{
+    "question": "Write the question here.",
+    "options": {
+        "1": "Option 1",
+        "2": "Option 2",
+        "3": "Option 3",
+        "4": "Option 4"
+    },
+    "answer": "Option(x) with a one-line explanation."
+}
         """
     )    
     
@@ -91,8 +104,9 @@ async def process_urls(request: Request, url: str = Form(...)):
     
     mcqs = await asyncio.gather(*(test(chunk) for chunk in chunks))
     print(mcqs)
-    ans = []
-    # for mcq in mcqs:
+    ans = parse_mcq(mcqs)
+    print("answer ----------------------------------------------", ans)
+    
         
     return templates.TemplateResponse("app.html", {"request": request, "mcqs": mcqs})
       
@@ -143,7 +157,8 @@ async def upload_pdf(request: Request, pdf: UploadFile = File(...)):
         
         mcqs = await asyncio.gather(*(test(chunk) for chunk in chunks))
         print(mcqs)
-        ans = []
+        ans = parse_mcq(mcqs)
+        print("answer ----------------------------------------------", ans)
         # for mcq in mcqs:
             
         return templates.TemplateResponse("app.html", {"request": request, "mcqs": mcqs})
