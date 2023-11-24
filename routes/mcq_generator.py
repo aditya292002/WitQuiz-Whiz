@@ -4,12 +4,12 @@ from icecream import ic
 from fastapi import Request, Form, FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from routes.mcq_generator import * 
-from scrapper import *
+from utility.scrapper import *
 from openai_handler import *
 import asyncio
 from fastapi.templating import Jinja2Templates
 from utility.parse_mcq import parse_mcq
+from utility.generate_mcq import generate
 
 router_gen_mcq = APIRouter(
     prefix='/process',
@@ -26,68 +26,13 @@ templates = Jinja2Templates(directory="templates")
 
 
 
-async def test(user_input):
-    ic(user_input)
-    
-    thread = client.beta.threads.create()
-    
-    message = client.beta.threads.messages.create(
-        thread_id=thread.id,
-        role="user",
-        content=user_input
-    )
 
-    ic(client.beta.threads.messages.list(thread_id=thread.id).data)
-    
-    run = client.beta.threads.runs.create(
-        thread_id=thread.id,
-        assistant_id=assistant_id,
-        instructions="""
-Generate a multiple-choice question with four options and return it in the following JSON format:
-
-json
-Copy code
-{
-    "question": "Write the question here.",
-    "options": {
-        "1": "Option 1",
-        "2": "Option 2",
-        "3": "Option 3",
-        "4": "Option 4"
-    },
-    "answer": "Option(x) with a one-line explanation."
-}
-        """
-    )    
-    
-    
-
-    while True:
-        run = client.beta.threads.runs.retrieve(thread_id=thread.id, run_id=run.id)
-        await asyncio.sleep(3)
-        print(run.status)
-        print(user_input[:10])
-        if run.status in ("completed", "failed"):
-            break
-    messages = client.beta.threads.messages.list(thread_id=thread.id)
-    latest_message = messages.data[0]
-    text = latest_message.content[0].text.value
-
-    # deleting the thread
-    response = client.beta.threads.delete(thread.id)
-    ic(response)
-
-    return text
-        
 
 
 @router_gen_mcq.post("/urls")
 async def process_urls(request: Request, url: str = Form(...)):
     print(url)
-    data_scrapper_obj = data_scrapper()
-    print(data_scrapper_obj)
-    data_scrapper_obj.scrape_web_content(url)
-    data = data_scrapper_obj.myWebData
+    data = scrape_web_content(url)
     
     # for the sake of simplicity and avoid overuse of API i am considering only 3 chunks of data
     data = data[:min(len(data), 1600)]
@@ -102,13 +47,12 @@ async def process_urls(request: Request, url: str = Form(...)):
     ic(chunks)
 
     
-    mcqs = await asyncio.gather(*(test(chunk) for chunk in chunks))
-    print(mcqs)
-    ans = parse_mcq(mcqs)
-    print("answer ----------------------------------------------", ans)
+    mcqs = await asyncio.gather(*(generate(chunk) for chunk in chunks))
+    parsed_mcq = parse_mcq(mcqs)
+    print(parsed_mcq)
     
         
-    return templates.TemplateResponse("app.html", {"request": request, "mcqs": mcqs})
+    return templates.TemplateResponse("app.html", {"request": request, "mcqs": parsed_mcq})
       
     
 @router_gen_mcq.post("/pdf")
@@ -117,16 +61,14 @@ async def upload_pdf(request: Request, pdf: UploadFile = File(...)):
     # Check if the uploaded file is a PDF
     if pdf.filename.endswith(".pdf"):
         pdf_content = await pdf.read()  # Asynchronously read the contents of the PDF file
-        data_scrapper_obj = data_scrapper()
-        data_scrapper_obj.extract_pdf_content(pdf_content)
-        data = data_scrapper_obj.myPdfData
+        data = extract_pdf_content(pdf_content)
 
         # For simplicity, consider only 3 chunks of data
         data = data[:min(len(data), 1600)]
         chunks = [' '.join(data[i:i+500][:30]) for i in range(0, len(data), 500)][:3]
         ic(chunks)
 
-        mcqs = await asyncio.gather(*(test(chunk) for chunk in chunks))
+        mcqs = await asyncio.gather(*(generate(chunk) for chunk in chunks))
         print(mcqs)
 
         return templates.TemplateResponse("app.html", {"request": request, "mcqs": mcqs})
@@ -139,9 +81,7 @@ async def upload_pdf(request: Request, pdf: UploadFile = File(...)):
     ic("inside upload pdf get")
     # Check if the uploaded file is a PDF
     if pdf.filename.endswith(".pdf"):
-        data_scrapper_obj = data_scrapper()
-        data_scrapper_obj.extract_pdf_content(pdf)
-        data = data_scrapper_obj.myPdfData
+        data =extract_pdf_content(pdf)
         # for the sake of simplicity and avoid overuse of API i am considering only 3 chunks of data
         data = data[:min(len(data), 1600)]
         chunks = []
@@ -155,7 +95,7 @@ async def upload_pdf(request: Request, pdf: UploadFile = File(...)):
         ic(chunks)
 
         
-        mcqs = await asyncio.gather(*(test(chunk) for chunk in chunks))
+        mcqs = await asyncio.gather(*(generate(chunk) for chunk in chunks))
         print(mcqs)
         ans = parse_mcq(mcqs)
         print("answer ----------------------------------------------", ans)
@@ -168,44 +108,6 @@ async def upload_pdf(request: Request, pdf: UploadFile = File(...)):
         
     else:
         return JSONResponse(content={"error": "Please upload a PDF file"}, status_code=400)
-    
-    
-@router_gen_mcq.post("/pdf")
-async def upload_pdf(request: Request, pdf: UploadFile = File(...)):
-    ic("inside upload pdf")
-    # Check if the uploaded file is a PDF
-    if pdf.filename.endswith(".pdf"):
-        data_scrapper_obj = data_scrapper()
-        data_scrapper_obj.extract_pdf_content(pdf)
-        data = data_scrapper_obj.myPdfData
-        # for the sake of simplicity and avoid overuse of API i am considering only 3 chunks of data
-        data = data[:min(len(data), 1600)]
-        chunks = []
-        ind = 0
-        count_chunks = 0
-        while(ind < len(data) and count_chunks < 3):
-            chunks.append(' '.join(data[ind:ind+500][:30]))
-            ind += 500
-            count_chunks += 1
-            
-        ic(chunks)
-
-        
-        mcqs = await asyncio.gather(*(test(chunk) for chunk in chunks))
-        print(mcqs)
-        ans = []
-        # for mcq in mcqs:
-            
-        return templates.TemplateResponse("app.html", {"request": request, "mcqs": mcqs})
-        
-    
-        
-        
-    else:
-        return JSONResponse(content={"error": "Please upload a PDF file"}, status_code=400)
-    
-        
-    
     
     
     

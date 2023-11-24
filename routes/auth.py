@@ -8,7 +8,7 @@ from models import Users, CreateUserRequest
 from starlette.responses import RedirectResponse
 from typing import Annotated
 from icecream import ic
-import time
+# import time
 
 router = APIRouter(
     prefix='/auth',
@@ -111,6 +111,7 @@ async def create_user(username: str = Form(...), password: str = Form(...), db: 
 
 
 @router.post("/login")
+
 async def login(
     request: Request,
     response: Response,
@@ -128,11 +129,16 @@ async def login(
         response.set_cookie(key="session_id", value=session_id)
         user.session_id = session_id
         db.commit()
-        return {"message": "Successfully logged in"}
-        # return templates.TemplateResponse("app.html", {"request": request})
+        return 'There is some problem with this page, Dont worry you are already logged in, Please return to the home page'
 
 
 @router.get("/logout")
-async def logout(response: Response):
+async def logout(request: Request, response: Response, db: Session = Depends(get_db)):
     response.delete_cookie(key="session_id")
+    session_id = request.cookies.get("session_id")
+    ic(session_id)
+    user = db.query(Users).filter(Users.session_id == session_id).first()
+    if(user):
+        user.session_id = None
+        db.commit()
     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
