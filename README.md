@@ -20,7 +20,7 @@ This project aims to enhance the learning experience by converting PDFs and webs
 
 1. Run the bash script **requirements.sh**:
    ```bash
-   $ bash requirements.sh
+   $ pip install -r requirements.txt
    ```
 
 2. Add your **OPENAI_API_KEY** to **constants.py**.
