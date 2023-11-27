@@ -48,3 +48,5 @@ This project aims to enhance the learning experience by converting PDFs and webs
 
 This project aims to enhance the learning experience by converting PDFs and website content into engaging multiple-choice questions effortlessly.
 
+## LICENSE
+[MIT LICENSE](LICENSE)
