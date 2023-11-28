@@ -31,7 +31,7 @@ This project aims to enhance the learning experience by converting PDFs and webs
 
 5. Run the FastAPI server:
    ```bash
-   $ uvicorn main:app --reload
+   $ python -m uvicorn main:app --reload
    ```
 
 ### Prerequisites
