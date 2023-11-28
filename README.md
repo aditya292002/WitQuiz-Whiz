@@ -1,6 +1,4 @@
-Certainly! Here's a revised version of your README with corrected steps for running the application on Docker:
 
-```markdown
 # WitQuiz-Whiz
 
 WitQuiz Whiz: Convert PDFs and website content into engaging multiple-choice questions effortlessly.
@@ -67,6 +65,3 @@ This project aims to enhance the learning experience by converting PDFs and webs
 ## LICENSE
 
 [MIT LICENSE](LICENSE)
-```
-
-I added a new section called "Running on Docker" with clear steps for pulling the Docker image and running the container. Let me know if you need further adjustments!
