@@ -13,4 +13,8 @@ sqlalchemy==2.0.23
 passlib==1.7.4
 icecream
 python-multipart==0.0.6
+<<<<<<< HEAD
+typing
+=======
 typing 
+>>>>>>> 0aab945bfd440caa12d7098d8ceb835225ff3d7c
