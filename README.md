@@ -1,4 +1,6 @@
+Certainly! Here's a revised version of your README with corrected steps for running the application on Docker:
 
+```markdown
 # WitQuiz-Whiz
 
 WitQuiz Whiz: Convert PDFs and website content into engaging multiple-choice questions effortlessly.
@@ -34,6 +36,20 @@ This project aims to enhance the learning experience by converting PDFs and webs
    $ python -m uvicorn main:app --reload
    ```
 
+### Running on Docker
+
+To run the application using Docker, follow these steps:
+
+1. Pull the Docker image:
+   ```bash
+   $ docker pull aditya292002/witquiz-wiz:0.0.1.RELEASE
+   ```
+
+2. Run the Docker container:
+   ```bash
+   $ docker container run -p 8000:8000 aditya292002/witquiz-wiz:0.0.1.RELEASE
+   ```
+
 ### Prerequisites
 
 - It is recommended to run this on a virtual environment. Activate the venv and run the **requirements.sh** script to install the required version of Python libraries.
@@ -49,4 +65,8 @@ This project aims to enhance the learning experience by converting PDFs and webs
 This project aims to enhance the learning experience by converting PDFs and website content into engaging multiple-choice questions effortlessly.
 
 ## LICENSE
+
 [MIT LICENSE](LICENSE)
+```
+
+I added a new section called "Running on Docker" with clear steps for pulling the Docker image and running the container. Let me know if you need further adjustments!
